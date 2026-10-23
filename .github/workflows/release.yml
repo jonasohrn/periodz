@@ -25,7 +25,16 @@ jobs:
         run: test "$GITHUB_REF_NAME" = "v$(node -p 'require("./package.json").version')"
       # prepublishOnly runs the checks and prepack builds. No token is needed, since npm uses
       # the OIDC trusted publisher, and it adds provenance automatically.
-      - run: npm publish
+      # Skipped when the version is already on npm, e.g. published by hand or by an earlier run,
+      # so that the GitHub release is still created.
+      - name: Publish to npm
+        run: |
+          PACKAGE="$(node -p 'const p = require("./package.json"); `${p.name}@${p.version}`')"
+          if [ -n "$(npm view "$PACKAGE" version 2>/dev/null)" ]; then
+            echo "$PACKAGE is already on npm"
+          else
+            npm publish
+          fi
       - name: Create GitHub release
         env:
           GH_TOKEN: ${{ github.token }}

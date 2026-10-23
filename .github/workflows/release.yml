@@ -1,0 +1,32 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+permissions:
+  contents: write # gh release create
+  id-token: write # npm trusted publishing
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          registry-url: https://registry.npmjs.org
+      # Trusted publishing needs npm 11.5.1 or later
+      - run: npm install -g npm@latest
+      - run: npm ci
+      - name: Check that the tag matches the package version
+        run: test "$GITHUB_REF_NAME" = "v$(node -p 'require("./package.json").version')"
+      # prepublishOnly runs the checks and prepack builds. No token is needed, since npm uses
+      # the OIDC trusted publisher, and it adds provenance automatically.
+      - run: npm publish
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --generate-notes --verify-tag

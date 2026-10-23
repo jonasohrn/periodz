@@ -1,0 +1,82 @@
+{
+  "name": "periodz",
+  "version": "0.8.0",
+  "description": "Set operations (intersection, union, subtract) on periods of numbers, Dates, Day.js and custom comparable values",
+  "keywords": [
+    "interval",
+    "range",
+    "period",
+    "typescript",
+    "date",
+    "time",
+    "arithmetic",
+    "intersection",
+    "union",
+    "sequence"
+  ],
+  "homepage": "https://github.com/jonasohrn/periodz#readme",
+  "bugs": {
+    "url": "https://github.com/jonasohrn/periodz/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jonasohrn/periodz.git"
+  },
+  "license": "MIT",
+  "author": "Jonas Öhrn (https://github.com/jonasohrn)",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:ui": "vitest --ui",
+    "test:mutation": "stryker run --incremental",
+    "type-check": "tsc",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "check": "npm run type-check && npm run lint && npm test",
+    "check:package": "publint && attw --pack --profile esm-only",
+    "example:holiday:console": "tsx docs/examples/holidays/console/organization-holidays.ts",
+    "example:status-bar": "tsx docs/examples/status-bar/status-bar.ts",
+    "prepack": "npm run build",
+    "prepublishOnly": "npm run check"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.5",
+    "@eslint/js": "^10.0.1",
+    "@stryker-mutator/core": "^10.0.0",
+    "@stryker-mutator/typescript-checker": "^10.0.0",
+    "@stryker-mutator/vitest-runner": "^10.0.0",
+    "@vitest/coverage-v8": "^4.1.12",
+    "@vitest/ui": "^4.1.12",
+    "dayjs": "^1.11.23",
+    "eslint": "^10.13.0",
+    "publint": "^0.3.25",
+    "tsup": "^9.0.0",
+    "tsx": "^4.23.15",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.72.0",
+    "vitest": "^4.1.12"
+  },
+  "overrides": {
+    "typed-rest-client": {
+      "qs": "^6.16.1"
+    }
+  }
+}

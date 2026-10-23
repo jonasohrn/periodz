@@ -1,0 +1,30 @@
+{
+  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "packageManager": "npm",
+  "reporters": [
+    "html",
+    "clear-text",
+    "progress"
+  ],
+  "testRunner": "vitest",
+  "checkers": ["typescript"],
+  "tsconfigFile": "tsconfig.json",
+  "mutate": [
+    "src/**/*.ts",
+    "!src/**/*.test.ts",
+    "!src/testHelpers.ts",
+    "!src/types.ts",
+    "!src/index.ts"
+  ],
+  "thresholds": {
+    "high": 100,
+    "low": 95,
+    "break": 100
+  },
+  "coverageAnalysis": "perTest",
+  "tempDirName": "stryker-tmp",
+  "cleanTempDir": "always",
+  "vitest": {
+    "configFile": "vitest.stryker.config.ts"
+  }
+}

@@ -1,0 +1,41 @@
+name: Mutation testing
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'stryker.config.json'
+      - 'vitest*.ts'
+      - 'package-lock.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  stryker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      # Fails below the break threshold in stryker.config.json. Reports to the Stryker dashboard
+      # when the STRYKER_DASHBOARD_API_KEY secret is set.
+      - name: Run Stryker
+        env:
+          STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
+        run: npx stryker run --reporters "html,clear-text${STRYKER_DASHBOARD_API_KEY:+,dashboard}"
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: mutation-report
+          path: reports/mutation/

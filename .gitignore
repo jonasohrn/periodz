@@ -61,3 +61,4 @@ reports/
 
 # Test artifacts
 .vitest/
+/TODO_internal.rtf

@@ -1,4 +1,4 @@
-# Using Temporal, Luxon, date-fns and Moment with Periodz
+# Using Temporal, Luxon, Chronera, date-fns and Moment with Periodz
 
 Periodz supports numbers, `Date` and Day.js out of the box. It also accepts **any object with
 `compareTo()` and `diff()` methods**, like Java's `Comparable`:
@@ -15,7 +15,7 @@ Period(Version(2), Version(5)).existsAt(Version(3)); // true
 date-fns works on plain `Date` objects, so it needs no wrapper. That includes `TZDate` from
 `@date-fns/tz`, a `Date` that does its date math in a time zone. See [date-fns](#date-fns) below.
 
-Temporal, Luxon and Moment values have no `compareTo()` or `diff()`, so you wrap them with a
+Temporal, Luxon, Chronera and Moment values have no `compareTo()` or `diff()`, so you wrap them with a
 small factory function. The wrapper is the start or end of the period, and it stays the same
 object through every operation. Results of `intersection()`, `union()`, `subtract()` and `mix()`
 contain your original values, time zone included.
@@ -25,7 +25,7 @@ To run it, use `npm install && npm start` in that folder.
 
 ## Wrappers
 
-Temporal's `Instant` and `ZonedDateTime`, Luxon and Moment all convert to epoch milliseconds, so
+Temporal's `Instant` and `ZonedDateTime`, Luxon, Chronera and Moment all convert to epoch milliseconds, so
 one factory covers them all. The original value is kept in `value`:
 
 ```ts
@@ -37,6 +37,7 @@ type MsPoint<T> = ReturnType<typeof MsPoint<T>>;
 
 const TemporalPoint = (t: Temporal.Instant | Temporal.ZonedDateTime) => MsPoint(t, t.epochMilliseconds);
 const LuxonPoint = (dt: DateTime) => MsPoint(dt, dt.toMillis());
+const ChroneraPoint = (c: Chronera) => MsPoint(c, c.toInstant().epochMilliseconds); // A plain date becomes midnight UTC
 const MomentPoint = (m: Moment) => MsPoint(m.clone(), m.valueOf()); // Moments are mutable
 ```
 
@@ -80,6 +81,15 @@ free.existsAt(at('11:00')); // true
 for (const period of free.periods()) {
   const start = (period.start as MsPoint<Temporal.Instant | DateTime>).value; // The original Temporal.Instant or DateTime
 }
+```
+
+Chronera values combine the same way:
+
+```ts
+// A call at 22:00–22:30 in Bangkok, which is 16:00–16:30 in Stockholm
+const bangkok = (time: string) => ChroneraPoint(chronera(`2026-03-02T${time}[Asia/Bangkok]`));
+
+free.subtract(Period(bangkok('22:00'), bangkok('22:30'))); // 08:00–09:00, 10:00–13:00, 14:30–15:00, 16:30–17:00
 ```
 
 Calendar days with `DayPoint`:

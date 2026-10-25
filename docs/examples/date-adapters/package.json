@@ -1,7 +1,7 @@
 {
   "name": "periodz-date-adapters-example",
   "private": true,
-  "description": "Periodz with Temporal, Luxon and date-fns values",
+  "description": "Periodz with Temporal, Luxon, Chronera and date-fns values",
   "type": "module",
   "scripts": {
     "start": "tsx date-adapters.ts",
@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@date-fns/tz": "^1.5.0",
+    "@intech-software/chronera": "^0.2.9",
     "@js-temporal/polyfill": "^0.5.1",
     "date-fns": "^4.4.0",
     "luxon": "^3.7.2"

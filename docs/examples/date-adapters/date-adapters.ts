@@ -1,12 +1,13 @@
 /* eslint-disable no-console */
-// Periodz with Temporal, Luxon and date-fns values, and Moment in comments. See docs/date-like-adapters.md.
+// Periodz with Temporal, Luxon, Chronera and date-fns values, and Moment in comments. See docs/date-like-adapters.md.
 
 import { Temporal } from '@js-temporal/polyfill';
 import { DateTime } from 'luxon';
+import { chronera } from '@intech-software/chronera';
 import { addDays, eachDayOfInterval, format, millisecondsToHours, setHours } from 'date-fns';
 import { TZDate } from '@date-fns/tz';
 import { Period, PeriodSeq, type IPeriod } from '../../../src/index.ts';
-import { DayPoint, LuxonPoint, TemporalPoint, type MsPoint } from './points.ts';
+import { ChroneraPoint, DayPoint, LuxonPoint, TemporalPoint, type MsPoint } from './points.ts';
 
 const zone = 'Europe/Stockholm';
 
@@ -31,13 +32,19 @@ const meetings = PeriodSeq([Period(at('09:00'), at('10:00')), Period(at('13:00')
 // All MsPoints combine, whichever library they wrap
 const free = workday.subtract(meetings).subtract(booking);
 
-// The endpoints are the original Luxon or Temporal values in .value, and every MsPoint has .ms
+// The endpoints are the original Luxon, Temporal or Chronera values in .value, and every MsPoint has .ms
 const hhmm = (p: IPeriod) => [p.start, p.end]
   .map((point) => DateTime.fromMillis((point as MsPoint<unknown>).ms, { zone }).toFormat('HH:mm'))
   .join('–');
 console.log('Free:', free.periods().map(hhmm).join(', ')); // 08:00–09:00, 10:00–13:00, 14:30–15:00, 16:00–17:00
 console.log('Free hours:', free.length() / 3_600_000); // 5.5
 console.log('Free at 11:00:', free.existsAt(at('11:00'))); // true
+
+// ===== CHRONERA: A CALL FROM BANGKOK =====
+
+const bangkok = (time: string) => ChroneraPoint(chronera(`2026-03-02T${time}[Asia/Bangkok]`));
+const call = Period(bangkok('22:00'), bangkok('22:30')); // 16:00–16:30 in Stockholm
+console.log('Free after the call:', free.subtract(call).periods().map(hhmm).join(', ')); // 08:00–09:00, 10:00–13:00, 14:30–15:00, 16:30–17:00
 
 // ===== DATE-FNS: OPENING HOURS IN A WEEK =====
 

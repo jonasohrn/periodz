@@ -22,7 +22,7 @@ staffed.periods().map(p => `${p.start}–${p.end} ${p.subjects.join('+')}`);
 ## Features
 
 - **Closure of operations**: Every set operation takes a `PeriodLike` and returns a `PeriodLike`, whether the result is empty, one period or many. Chain operations indefinitely without ever leaving the type, and read the result with `periods()`; you never need to check which kind you have unless you want to
-- **Type flexibility**: Works with numbers, JavaScript Date objects (so date-fns as is), Day.js objects, and any type with `compareTo()` and `diff()` methods, such as wrapped Temporal, Luxon or Moment values (operations must use compatible types)
+- **Type flexibility**: Works with numbers, JavaScript Date objects (so date-fns as is), Day.js objects, and any type with `compareTo()` and `diff()` methods, such as wrapped Temporal, Luxon, Chronera or Moment values (operations must use compatible types)
 - **Immutable design**: All operations return new objects rather than modifying existing ones
 - **Empty period handling**: Graceful handling of empty/invalid periods
 - **Subject tracking**: Periods can carry metadata about their "owners" or subjects
@@ -167,8 +167,8 @@ const supported = Period(Version(2), Version(5));
 console.log(supported.existsAt(Version(3))); // true
 ```
 
-Using Temporal, Luxon, date-fns, Moment, or another date library? See
-[Using Temporal, Luxon, date-fns and Moment with Periodz](docs/date-like-adapters.md).
+Using Temporal, Luxon, Chronera, date-fns, Moment, or another date library? See
+[Using Temporal, Luxon, Chronera, date-fns and Moment with Periodz](docs/date-like-adapters.md).
 
 ### Subjects and propsMerger
 

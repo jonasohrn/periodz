@@ -2,6 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/periodz)](https://www.npmjs.com/package/periodz)
 [![CI](https://github.com/jonasohrn/periodz/actions/workflows/ci.yml/badge.svg)](https://github.com/jonasohrn/periodz/actions/workflows/ci.yml)
+[![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fjonasohrn%2Fperiodz%2Fmain)](https://dashboard.stryker-mutator.io/reports/github.com/jonasohrn/periodz/main)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 Period and interval arithmetic — a TypeScript library for set operations on closed intervals, using numbers, JavaScript `Date` objects, Day.js objects, or any type with `compareTo()` and `diff()` methods.

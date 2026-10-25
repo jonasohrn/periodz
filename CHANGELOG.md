@@ -7,6 +7,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.8.1]
+
+### Changed
+
+- Releases are published from GitHub Actions with npm provenance.
+- The README shows the mutation score from the Stryker dashboard.
+
 ## [0.8.0]
 
 First public release.
@@ -20,5 +27,6 @@ First public release.
 - Subjects and `propsMerger` to carry metadata through operations.
 - Type guards `isPeriod()`, `isPeriodSeq()` and `isEmpty()`, and the `PeriodzError` error class.
 
-[Unreleased]: https://github.com/jonasohrn/periodz/compare/v0.8.0...HEAD
+[Unreleased]: https://github.com/jonasohrn/periodz/compare/v0.8.1...HEAD
+[0.8.1]: https://github.com/jonasohrn/periodz/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/jonasohrn/periodz/releases/tag/v0.8.0

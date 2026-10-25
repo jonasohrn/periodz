@@ -7,6 +7,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- The README has a "Why periodz?" section.
+- The date-adapters example and guide show how to wrap Chronera.
+
+### Changed
+
+- `CONTRIBUTING.md` asks for a changelog entry with every change and describes the release steps in full.
+- The README's Usage intro now says that a period is created from a start and an end value of a supported type.
+
 ## [0.8.1]
 
 ### Changed

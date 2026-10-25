@@ -40,9 +40,17 @@ The mutation score is 100%, and CI fails if it drops. Kill new survivors with te
 for performance may get a `// Stryker disable` comment, with a reason. See
 [docs/MUTATION_TESTING.md](docs/MUTATION_TESTING.md).
 
+## Changelog
+
+Every change adds an entry to `CHANGELOG.md` under `## [Unreleased]`, in the same commit. Put it under a
+[Keep a Changelog](https://keepachangelog.com/en/1.1.0/) subsection such as `### Added`, `### Changed` or
+`### Fixed`, and write it for users of the library.
+
 ## Releasing
 
-1. Move the `Unreleased` entries in `CHANGELOG.md` under a new version heading.
+1. In `CHANGELOG.md`, remove the `Unreleased` entries that users don't need, move the rest under a new version
+   heading, and update the compare links at the bottom. Commit the change, since `npm version` needs a clean
+   working tree.
 2. Run `npm version <patch|minor|major>`, which commits the version and creates a `v*` tag.
 3. Run `git push --follow-tags`. The release workflow then publishes to npm with provenance and creates a GitHub
    release.

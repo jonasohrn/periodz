@@ -28,6 +28,13 @@ work uniformly across the supported value types.
 - **Test runner**: Uses vitest
 - **Version holds**: TypeScript stays on 6.0.x and Vitest on 4.x until Stryker supports TypeScript 7 (stryker-js#6111) and Vitest 5 (stryker-js#6210). See `docs/MUTATION_TESTING.md`
 
+## Changelog
+
+- Every commit adds an entry to `CHANGELOG.md` under `## [Unreleased]`, in the same commit
+- Put the entry under a Keep a Changelog subsection (`### Added`, `### Changed`, `### Fixed`, `### Removed`, `### Deprecated`, `### Security`), and reuse the subsection if it already exists under `[Unreleased]`
+- Write one line per change, for users of the library, in the style of the existing entries
+- Never rename `[Unreleased]` to a version or change the compare links. The maintainer does that by hand when releasing
+
 ## Architecture
 
 ### Core Components

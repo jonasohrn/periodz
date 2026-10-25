@@ -7,6 +7,18 @@
 
 Period and interval arithmetic — a TypeScript library for set operations on closed intervals, using numbers, JavaScript `Date` objects, Day.js objects, or any type with `compareTo()` and `diff()` methods.
 
+## Why periodz?
+
+- **Every result has the same shape.** Each operation returns empty, one period or many, all with the same methods. You never get a `null` or an exception, and you never need to branch on the kind of result. Chain as many operations as you like and read the answer with `periods()`.
+- **Results tell you whose they are.** Tag periods with subjects such as people, rooms or statuses, and every operation passes them on to the result periods.
+- **Bring your own values.** Use numbers, `Date`, Day.js, or wrap Temporal, Luxon, Chronera or anything else that can be compared. No converting to timestamps and back.
+
+```typescript
+const staffed = Period(9, 12, 'Alice').mix(Period(11, 15, 'Bob'));
+staffed.periods().map(p => `${p.start}–${p.end} ${p.subjects.join('+')}`);
+// ['9–11 Alice', '11–12 Alice+Bob', '12–15 Bob']
+```
+
 ## Features
 
 - **Closure of operations**: Every set operation takes a `PeriodLike` and returns a `PeriodLike`, whether the result is empty, one period or many. Chain operations indefinitely without ever leaving the type, and read the result with `periods()`; you never need to check which kind you have unless you want to
@@ -27,8 +39,10 @@ later, and in browsers through any modern bundler.
 
 ## Usage
 
-Periodz implements mathematical [set operations](https://en.wikipedia.org/wiki/Set_(mathematics)#Basic_operations) on closed [intervals](https://en.wikipedia.org/wiki/Interval_(mathematics)). 
-Any kind of interval-like object can be used such as a period, range or extent which has two numerically comparable properties that represents its start and end points.
+Periodz implements mathematical [set operations](https://en.wikipedia.org/wiki/Set_(mathematics)#Basic_operations) on closed [intervals](https://en.wikipedia.org/wiki/Interval_(mathematics)).
+You create a period from a start and an end value, both included. The values can be numbers, `Date` objects, Day.js objects
+or any type with `compareTo()` and `diff()` methods, as long as all periods in an operation use the same type.
+
 ### Closure of operations: one result type, `PeriodLike`
 
 `intersection()`, `union()`, `subtract()` and `mix()` take any `PeriodLike` and return a `PeriodLike`: the empty period, a single `Period` or a `PeriodSeq` of two or more periods, whichever fits the result. The set of values is closed under these operations, the same way integers are closed under addition, so you can chain operations indefinitely without ever leaving the type. All three kinds share the same interface, so intermediate results never need special handling. An operation that leaves nothing behind returns the empty period instead of throwing or returning `null`, and you can keep chaining operations on it.

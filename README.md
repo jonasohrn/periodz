@@ -93,6 +93,18 @@ const result = period1
 
 mix() - mixes periods so that the resulting array contains all unique overlapping periods.
 
+span() - the period from the first start to the last end, which also covers the gaps between the periods. It has no
+subjects, since no period covers the gaps. Subtract the periods from it to get the gaps, which have no subjects either:
+
+```typescript
+const bookings = PeriodSeq([Period(9, 10), Period(12, 13), Period(13, 15)]);
+bookings.span(); // Period(9, 15)
+bookings.span().subtract(bookings); // Period(10, 12), the touching 12–13 and 13–15 leave no gap
+```
+
+The gaps share their start and end with the periods next to them, since periods are closed. To get the free time within
+a window instead, subtract the periods from the window: `Period(8, 17).subtract(bookings)`.
+
 ### Equality and Comparison Operations
 
 ```typescript

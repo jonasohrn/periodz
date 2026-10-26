@@ -742,6 +742,27 @@ describe('Period', () => {
     });
   });
 
+  describe('span()', () => {
+    it('with Period', () => {
+      periodEq(Period(10, 20).span(), Period(10, 20));
+    });
+
+    it('with empty period', () => {
+      expect(empty.span()).toBe(theEmptyPeriod);
+    });
+
+    it('has no subjects', () => {
+      periodEq(Period(10, 20, 'subject1').span(), Period(10, 20));
+    });
+
+    it('has no props, and no propsMerger for later operations', () => {
+      const propsMerger = () => ({ prop: 'value' });
+      const span = Period(10, 20, [], propsMerger).span();
+      expect(span).not.toHaveProperty('prop');
+      expect(span.intersection(Period(15, 25))).not.toHaveProperty('prop');
+    });
+  });
+
   describe('toString() and toCompactString()', () => {
     it('with Period', () => {
       const period = Period(10, 20);

@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- `span()` returns the period from the first start to the last end, without subjects, so that `span().subtract(periods)` gives the gaps between them.
 - The README has a "Why periodz?" section.
 - The date-adapters example and guide show how to wrap Chronera.
 

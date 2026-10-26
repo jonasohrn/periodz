@@ -436,6 +436,36 @@ describe('PeriodSeq', () => {
     });
   });
 
+  describe('span()', () => {
+    it('with PeriodSeq', () => {
+      const span = periodSeq.span();
+      expect(isPeriod(span)).toBe(true);
+      periodEq(span, Period(100, 250));
+
+      periodEq(PeriodSeq([Period(10, 20), Period(20, 30), Period(50, 60)]).span(), Period(10, 60));
+    });
+
+    it('subtracting the periods gives the gaps between them', () => {
+      periodEq(periodSeq.span().subtract(periodSeq), Period(150, 200));
+
+      // Touching periods have no gap between them
+      const seq = PeriodSeq([Period(10, 20), Period(20, 30), Period(50, 60), Period(70, 80)]);
+      periodSeqEq(seq.span().subtract(seq), [[30, 50], [60, 70]]);
+    });
+
+    it('has no subjects, and neither have the gaps', () => {
+      const seq = PeriodSeq([Period(10, 20, 'a'), Period(30, 40, 'b'), Period(50, 60, ['c1', 'c2'])]);
+      periodEq(seq.span(), Period(10, 60));
+      periodEq(seq.span().subtract(seq), PeriodSeq([Period(20, 30), Period(40, 50)]));
+    });
+
+    it('has no props', () => {
+      const propsMerger = () => ({ prop: 'value' });
+      const seq = PeriodSeq([Period(10, 20, [], propsMerger), Period(30, 40, [], propsMerger)]);
+      expect(seq.span()).not.toHaveProperty('prop');
+    });
+  });
+
   describe('toString() and toCompactString()', () => {
     it('with PeriodSeq', () => {
       const seq = PeriodSeq([Period(10, 20), Period(30, 40)]);

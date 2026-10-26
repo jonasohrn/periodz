@@ -1,5 +1,5 @@
 import type { ComparableValue, IComp, IPeriod, IPeriodSeq, PeriodLike } from './types';
-import { spanningPeriod, theEmptyPeriod } from './Period';
+import { spanBetween, spanningPeriod, theEmptyPeriod } from './Period';
 import { assert } from './guards';
 
 // Sorting function for periods
@@ -197,6 +197,11 @@ export const createPeriodSeq = (periodsArg: readonly IPeriod[]): IPeriodSeq => {
         self.intersection(other)
       ];
       return PeriodSeq(resultPeriods);
+    },
+
+    span(): IPeriod {
+      // The periods are sorted and don't overlap, so the last one ends last. A PeriodSeq has two or more periods.
+      return spanBetween(periods[0] as IPeriod, periods.at(-1) as IPeriod);
     },
 
     isEmpty(): boolean {

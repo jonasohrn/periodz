@@ -63,6 +63,12 @@ export const spanningPeriod = (period: IPeriod, other: IPeriod): IPeriod => {
   ) as IPeriod; // Never empty, since neither period is
 };
 
+// The period from the start of first to the end of last, without subjects or props. This is span(), which
+// also covers the gaps between periods, and no period covers those.
+export const spanBetween = (first: IPeriod, last: IPeriod): IPeriod => {
+  return createPeriod(first._getStart(), last._getEnd(), []) as IPeriod; // Never empty, since first is not
+};
+
 const createPeriod = (
     start: IComp,
     end: IComp,
@@ -216,6 +222,10 @@ const createPeriod = (
       return createPeriodSeq([self]).mix(other);
     },
 
+    span(): IPeriod {
+      return spanBetween(self, self);
+    },
+
     isEmpty(): boolean {
       return false;
     },
@@ -312,6 +322,10 @@ export const theEmptyPeriod: IEmptyPeriod = Object.freeze({
 
   mix(other: PeriodLike): PeriodLike {
     return other;
+  },
+
+  span(): IEmptyPeriod {
+    return theEmptyPeriod;
   },
 
   isEmpty(): boolean {

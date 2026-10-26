@@ -35,6 +35,11 @@ export interface PeriodCollection {
    *    |  b  |
    */
   readonly mix: (other: PeriodLike) => PeriodLike;
+  /**
+   * The period from the first start to the last end, so that it also covers the gaps between the periods.
+   * It has no subjects or props, since no period covers the gaps, and so neither do the gaps, `span().subtract(this)`.
+   */
+  readonly span: () => IPeriod | IEmptyPeriod;
   /** True if this covers all of other. Touching periods cover together, and the empty period is never contained. */
   readonly contains: (other: PeriodLike) => boolean;
   /** True if a period of this ends where a period of other starts, or the other way around. */

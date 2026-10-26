@@ -21,12 +21,11 @@ staffed.periods().map(p => `${p.start}–${p.end} ${p.subjects.join('+')}`);
 
 ## Features
 
-- **Closure of operations**: Every set operation takes a `PeriodLike` and returns a `PeriodLike`, whether the result is empty, one period or many. Chain operations indefinitely without ever leaving the type, and read the result with `periods()`; you never need to check which kind you have unless you want to
+- **Chain without checking**: Chain as many operations as you like and read the result with `periods()`. Every operation returns empty, one period or many, all with the same methods, so you never need to check which kind you got unless you want to. This is known as [closure of operations](#closure-of-operations-one-result-type-periodlike)
 - **Type flexibility**: Works with numbers, JavaScript Date objects (so date-fns as is), Day.js objects, and any type with `compareTo()` and `diff()` methods, such as wrapped Temporal, Luxon, Chronera or Moment values (operations must use compatible types)
 - **Immutable design**: All operations return new objects rather than modifying existing ones
 - **Empty period handling**: Graceful handling of empty/invalid periods
 - **Subject tracking**: Periods can carry metadata about their "owners" or subjects
-- **Performance optimizations**: Includes optimized algorithms for sequence operations
 
 ## Installation
 
@@ -42,6 +41,25 @@ later, and in browsers through any modern bundler.
 Periodz implements mathematical [set operations](https://en.wikipedia.org/wiki/Set_(mathematics)#Basic_operations) on closed [intervals](https://en.wikipedia.org/wiki/Interval_(mathematics)).
 You create a period from a start and an end value, both included. The values can be numbers, `Date` objects, Day.js objects
 or any type with `compareTo()` and `diff()` methods, as long as all periods in an operation use the same type.
+Used to periods that exclude the end? See [Coming from half-open periods](#coming-from-half-open-periods).
+
+### Coming from half-open periods
+
+Many libraries exclude the end of a period (`[start, end)`), so that 9–12 and 12–15 meet without overlapping. Periodz
+includes both ends, but a period always has a length, so you can write periods exactly the way you are used to:
+
+- `Period(5, 5)` is empty, not a single point
+- `Period(9, 12)` and `Period(12, 15)` touch but don't overlap, their intersection is empty and their union is `9–15`
+- `length()` is `end - start`, so `Period(9, 12).length()` is 3
+- `subtract()` gives `8–9` and `10–17` for `Period(8, 17).subtract(Period(9, 10))`
+
+The end only makes a difference when you look up a single value. `Period(9, 12).existsAt(12)` is `true`, and
+`periodsAt(12)` returns both 9–12 and 12–15.
+
+Write the end as the moment the period is over, not as its last day. January is
+`Period(new Date('2026-01-01'), new Date('2026-02-01'))`. `Period(new Date('2026-01-01'), new Date('2026-01-31'))`
+ends at midnight when January 31 starts, so it leaves out that day, `length()` is one day short, and it doesn't touch a
+period starting on February 1.
 
 ### Closure of operations: one result type, `PeriodLike`
 
@@ -120,11 +138,11 @@ console.log(p1.eq(Period(5, 5))); // false - compared to empty period
 // Overlap detection
 const a = Period(10, 20);
 const b = Period(15, 25);
-const c = Period(25, 30);
+const c = Period(20, 30);
 const d = PeriodSeq([Period(5, 12), Period(18, 22)]);
 
 console.log(a.overlaps(b)); // true - partial overlap
-console.log(a.overlaps(c)); // false - adjacent but not overlapping
+console.log(a.overlaps(c)); // false - touching but not overlapping
 console.log(a.overlaps(d)); // true - overlaps with sequence parts
 
 // Containment testing
@@ -147,8 +165,8 @@ console.log(touching.contains(Period(15, 25))); // true - touching periods conta
 ```typescript
 // Create periods with different value types
 const numericPeriod = Period(10, 20);
-const datePeriod = Period(new Date('2023-01-01'), new Date('2023-01-31'));
-const dayjsPeriod = Period(dayjs('2023-01-01'), dayjs('2023-01-31'));
+const datePeriod = Period(new Date('2023-01-01'), new Date('2023-02-01'));
+const dayjsPeriod = Period(dayjs('2023-01-01'), dayjs('2023-02-01'));
 
 // Operations work within the same type
 const numericUnion = numericPeriod.union(Period(15, 25)); // ✅ Numbers with numbers

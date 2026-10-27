@@ -51,11 +51,15 @@ Every change adds an entry to `CHANGELOG.md` under `## [Unreleased]`, in the sam
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) subsection such as `### Added`, `### Changed` or
 `### Fixed`, and write it for users of the library.
 
-## Releasing
+Don't add a version heading or change the compare links. That happens when the maintainer releases.
 
-1. In `CHANGELOG.md`, remove the `Unreleased` entries that users don't need, move the rest under a new version
-   heading, and update the compare links, including [Unreleased], at the bottom. Commit the change, since `npm version` needs a clean
-   working tree.
-2. Run `npm version <patch|minor|major>`, which commits the version and creates a `v*` tag.
-3. Run `git push --follow-tags`. The release workflow then publishes to npm with provenance and creates a GitHub
-   release.
+## Pull requests
+
+1. For larger changes, open an issue first, so we can agree on the approach before you write the code.
+2. Fork the repository and create a branch from `main`.
+3. Make your change with tests, and add a changelog entry.
+4. Run `npm run check`, and `npm run test:mutation` if you changed code in `src/`.
+5. Open a pull request against `main` that describes what changed and why.
+
+CI runs `npm run check` on Node.js 22, 24 and 26, checks the package, smoke-tests the build on Node.js 16.9, 18 and
+20, and runs mutation testing when `src/` changes. All of them must pass before the pull request is merged.

@@ -34,7 +34,7 @@ work uniformly across the supported value types.
 - Every commit adds an entry to `CHANGELOG.md` under `## [Unreleased]`, in the same commit
 - Put the entry under a Keep a Changelog subsection (`### Added`, `### Changed`, `### Fixed`, `### Removed`, `### Deprecated`, `### Security`), and reuse the subsection if it already exists under `[Unreleased]`
 - Write one line per change, for users of the library, in the style of the existing entries
-- Never rename `[Unreleased]` to a version or change the compare links. The maintainer does that by hand when releasing
+- Never rename `[Unreleased]` to a version or change the compare links. The maintainer does that by hand when releasing, see `docs/RELEASING.md`
 
 ## Architecture
 

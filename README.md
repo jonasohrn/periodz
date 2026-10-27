@@ -251,7 +251,7 @@ public API and may change in any release. Use `start` and `end` to read the star
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for how to set up, test and release periodz.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to set up, test and contribute to periodz.
 
 ## License
 

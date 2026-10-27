@@ -38,7 +38,7 @@
     "dist"
   ],
   "engines": {
-    "node": ">=22"
+    "node": ">=16.9"
   },
   "scripts": {
     "build": "tsup",
@@ -47,6 +47,7 @@
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
     "test:mutation": "stryker run --incremental",
+    "test:smoke": "node scripts/smoke-test.mjs",
     "type-check": "tsc",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",

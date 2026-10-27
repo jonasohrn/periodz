@@ -32,3 +32,25 @@ jobs:
       - name: Check the package with publint and attw
         if: matrix.node == 24
         run: npm run check:package
+
+  smoke:
+    name: Smoke test on Node ${{ matrix.node }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # From the engines minimum up to the oldest Node version in the test job
+        node: ['16.9', '18', '20']
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      # The dev tools need a newer Node, so only the smoke test runs on the old version
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm run test:smoke

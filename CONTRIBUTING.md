@@ -16,6 +16,7 @@ npm test               # Run all tests
 npm run test:watch     # Run tests in watch mode
 npm run test:coverage  # Run tests with coverage, which must stay at 100%
 npm run test:mutation  # Run Stryker mutation testing (incremental)
+npm run test:smoke     # Smoke-test dist/ on the current Node version (build first)
 npm run type-check     # Check types only
 npm run lint           # Run ESLint
 npm run lint:fix       # Fix lint issues
@@ -33,6 +34,10 @@ npm run check:package  # Check the packed package with publint and attw
   `Rank` in `src/testHelpers.ts`).
 - Shared test helpers live in `src/testHelpers.ts`. Never import helpers from a `*.test.ts` file, since that runs
   its tests again in the importing file.
+- The library supports Node.js 16.9 and later, but the dev tools (tsup, Vitest, ESLint, Stryker) need the version in
+  `.nvmrc`. CI therefore builds with that version and then runs only `scripts/smoke-test.mjs` with Node.js 16.9, 18
+  and 20. To do the same locally, run `npm ci` and `npm run build`, switch Node version, and run
+  `npm run test:smoke`. Don't use JavaScript built-ins newer than ES2022 in `src/`.
 
 ## Mutation testing
 

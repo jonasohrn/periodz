@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Changed
+
+- Periodz now requires Node.js 16.9 or later instead of 22, so older projects can install it. CI runs a smoke test of the built package on Node.js 16.9, 18 and 20.
+
 ## [0.9.1]
 
 ### Changed

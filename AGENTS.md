@@ -25,6 +25,7 @@ work uniformly across the supported value types.
 - **Run tests in DEV mode**: `npm run test:watch`
 - **Run mutation tests**: `npm run test:mutation` (incremental) or `npx stryker run` (full, as in CI)
 - **Build**: `npm run build` (tsup), then `npm run check:package` (publint and attw)
+- **Smoke test**: `npm run build && npm run test:smoke`. CI runs it on Node 16.9, 18 and 20, which are below the Vitest matrix. Node 16.9 is the `engines` minimum, so runtime code in `src/` must not use built-ins newer than ES2022. Install and build with the `.nvmrc` version (tsup needs Node 22.18+), and switch to an old Node only to run `test:smoke`
 - **Test runner**: Uses vitest
 - **Version holds**: TypeScript stays on 6.0.x and Vitest on 4.x until Stryker supports TypeScript 7 (stryker-js#6111) and Vitest 5 (stryker-js#6210). See `docs/MUTATION_TESTING.md`
 

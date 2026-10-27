@@ -34,7 +34,7 @@ staffed.periods().map(p => `${p.start}–${p.end} ${p.subjects.join('+')}`);
 npm install periodz
 ```
 
-Periodz is an ES module with its own TypeScript types and no runtime dependencies. It runs in Node.js 22 or
+Periodz is an ES module with its own TypeScript types and no runtime dependencies. It runs in Node.js 16.9 or
 later, and in browsers through any modern bundler.
 
 ## Usage

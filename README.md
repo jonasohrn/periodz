@@ -26,6 +26,7 @@ staffed.periods().map(p => `${p.start}–${p.end} ${p.subjects.join('+')}`);
 - **Immutable design**: All operations return new objects rather than modifying existing ones
 - **Empty period handling**: Graceful handling of empty/invalid periods
 - **Subject tracking**: Periods can carry metadata about their "owners" or subjects
+- **100% test coverage**: 100% actual (not execution) test coverage measured as [mutation test](https://en.wikipedia.org/wiki/Mutation_testing) coverage using [Stryker Mutator](https://stryker-mutator.io/). See also [MUTATION_TESTING](docs/MUTATION_TESTING.md).
 
 ## Installation
 

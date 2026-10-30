@@ -3,12 +3,16 @@ name: Mutation testing
 on:
   push:
     branches: [main]
-  pull_request:
-    paths:
+    # Only the files that can change the mutation score
+    paths: &mutation-paths
       - 'src/**'
       - 'stryker.config.json'
+      - 'tsconfig.json'
       - 'vitest*.ts'
       - 'package-lock.json'
+      - '.github/workflows/mutation.yml'
+  pull_request:
+    paths: *mutation-paths
   workflow_dispatch:
 
 permissions:

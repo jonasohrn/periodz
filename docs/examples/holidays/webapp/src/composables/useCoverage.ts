@@ -1,38 +1,18 @@
-import { PeriodSeq, type PeriodLike } from 'periodz'
+import { intersection, union, type PeriodLike } from 'periodz'
 import type { Employee } from './useEmployees'
 
 export function useCoverage() {
   function findCoverageGaps(employees: Employee[], timeRange: PeriodLike): PeriodLike {
-    const totalCoverage = employees.reduce((acc, emp) => acc.union(emp.schedule), PeriodSeq([]) as PeriodLike)
+    const totalCoverage = union(employees.map(employee => employee.schedule))
     return timeRange.subtract(totalCoverage)
   }
 
   function getTeamCoverage(employees: Employee[]): PeriodLike {
-    let teamCoverage: PeriodLike = PeriodSeq([])
-    
-    employees.forEach(employee => {
-      teamCoverage = teamCoverage.union(employee.schedule)
-    })
-    
-    return teamCoverage
+    return union(employees.map(employee => employee.schedule))
   }
 
   function findFullTeamCoverage(employees: Employee[]): PeriodLike {
-    if (employees.length === 0) {
-      return PeriodSeq([])
-    }
-    
-    const firstEmployee = employees[0]
-    if (!firstEmployee) {
-      return PeriodSeq([])
-    }
-    
-    let intersection = firstEmployee.schedule
-    employees.slice(1).forEach(employee => {
-      intersection = intersection.intersection(employee.schedule)
-    })
-    
-    return intersection
+    return intersection(employees.map(employee => employee.schedule))
   }
 
   function findMinimalCoverage(employees: Employee[]): PeriodLike {

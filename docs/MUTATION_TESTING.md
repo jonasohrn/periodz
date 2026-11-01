@@ -14,6 +14,11 @@ npx stryker run        # Full run, as in CI
 - `thresholds.break` is 100, so any survivor fails the run, both locally and in the `mutation.yml` CI workflow.
   CI uploads the HTML report as an artifact, and also sends it to the Stryker dashboard when the
   `STRYKER_DASHBOARD_API_KEY` secret is set.
+- The incremental run reuses the results in `reports/stryker-incremental.json` for mutants whose code and tests
+  didn't change. It doesn't notice changes to `src/testHelpers.ts`, to other source files the tests depend on, or to
+  dependencies and config, so a reused result can be wrong. After such a change, run
+  `npx stryker run --incremental --force`, which retests all mutants and refreshes the incremental report. CI
+  always does a full run.
 - Stryker runs Vitest with `vitest.stryker.config.ts`, which leaves out `Performance.test.ts`, since timing tests
   are unreliable when many Stryker workers run at once.
 - TypeScript stays on 6.0.x for now, since Stryker can't read the tsconfig with TypeScript 7

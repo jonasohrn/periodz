@@ -9,7 +9,7 @@
  */
 
 import { type IPeriod } from '../../../../src/types.ts';
-import { Period, PeriodSeq, isPeriod, type PeriodLike } from '../../../../src/index.ts';
+import { Period, PeriodSeq, intersection, isPeriod, union, type PeriodLike } from '../../../../src/index.ts';
 
 // ===== EMPLOYEE DEFINITIONS =====
 
@@ -328,7 +328,7 @@ function whoWorksAt(timestamp: Date, employees: Employee[]): string[] {
  */
 function findCoverageGaps(employees: Employee[], timeRange: PeriodLike): PeriodLike {
   // Get all work periods from all employees
-  const totalCoverage = employees.reduce((acc, emp) => acc.union(emp.schedule), PeriodSeq([]) as PeriodLike);
+  const totalCoverage = union(employees.map(employee => employee.schedule));
 
   // Subtract total coverage from the time range to find gaps
   return timeRange.subtract(totalCoverage);
@@ -338,34 +338,14 @@ function findCoverageGaps(employees: Employee[], timeRange: PeriodLike): PeriodL
  * Calculate total team coverage (union of all schedules)
  */
 function getTeamCoverage(employees: Employee[]): PeriodLike {
-  let teamCoverage: PeriodLike = PeriodSeq([]);
-  
-  employees.forEach(employee => {
-    teamCoverage = teamCoverage.union(employee.schedule);
-  });
-  
-  return teamCoverage;
+  return union(employees.map(employee => employee.schedule));
 }
 
 /**
  * Find periods when all employees work simultaneously
  */
 function findFullTeamCoverage(employees: Employee[]): PeriodLike {
-  if (employees.length === 0) {
-    return PeriodSeq([]);
-  }
-  
-  const firstEmployee = employees[0];
-  if (!firstEmployee) {
-    return PeriodSeq([]);
-  }
-  
-  let intersection = firstEmployee.schedule;
-  employees.slice(1).forEach(employee => {
-    intersection = intersection.intersection(employee.schedule);
-  });
-  
-  return intersection;
+  return intersection(employees.map(employee => employee.schedule));
 }
 
 /**

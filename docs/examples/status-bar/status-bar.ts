@@ -7,7 +7,7 @@
  * a getStatus() that is derived from its subjects: the most severe status wins.
  */
 
-import { Period, type IPeriod, type PropsMerger } from '../../../src/index.ts';
+import { mix, Period, type IPeriod, type PropsMerger } from '../../../src/index.ts';
 
 type Status = 'ok' | 'degraded' | 'down';
 
@@ -27,10 +27,12 @@ const StatusPeriod = (start: number, end: number, status: Status) => Period(star
 // ===== BUILD THE BAR =====
 
 // mix() splits overlapping periods into segments with the subjects of all periods that cover them
-const day = StatusPeriod(0, 24, 'ok')
-  .mix(StatusPeriod(6, 14, 'degraded'))
-  .mix(StatusPeriod(9, 11, 'down'))
-  .mix(StatusPeriod(18, 20, 'down'));
+const day = mix([
+  StatusPeriod(0, 24, 'ok'),
+  StatusPeriod(6, 14, 'degraded'),
+  StatusPeriod(9, 11, 'down'),
+  StatusPeriod(18, 20, 'down'),
+]);
 
 const segments = day.periods() as StatusPeriod[];
 

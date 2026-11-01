@@ -35,10 +35,12 @@ are those of both periods. So the status always matches the subjects of the peri
 that cover it:
 
 ```typescript
-const day = StatusPeriod(0, 24, 'ok')
-  .mix(StatusPeriod(6, 14, 'degraded'))
-  .mix(StatusPeriod(9, 11, 'down'))
-  .mix(StatusPeriod(18, 20, 'down'));
+const day = mix([
+  StatusPeriod(0, 24, 'ok'),
+  StatusPeriod(6, 14, 'degraded'),
+  StatusPeriod(9, 11, 'down'),
+  StatusPeriod(18, 20, 'down'),
+]);
 ```
 
 ```

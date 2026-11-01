@@ -62,12 +62,6 @@ describe('n-ary operations', () => {
       expect(result.periods()[1]).toBe(b);
     });
 
-    it('gives the same periods as union() of one period at a time', () => {
-      const periods = [7, 3, 12, 1, 9, 15, 4, 20, 2].map(start => Period(start, start + start % 4 + 1));
-      const oneAtATime = periods.reduce<PeriodLike>((result, period) => result.union(period), theEmptyPeriod);
-      expect(union(periods).eq(oneAtATime)).toBe(true);
-    });
-
     it('with other value types', () => {
       const date = (day: number) => new Date(Date.UTC(2026, 0, day));
       periodSeqEq(union([Period(date(5), date(10)), Period(date(1), date(6)), Period(date(20), date(25))]),

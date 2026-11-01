@@ -9,13 +9,9 @@ updates:
         dependency-type: development
         update-types: [minor, patch]
     ignore:
-      # Held back until Stryker supports them, see stryker-js#6111 (TypeScript 7) and #6210 (Vitest 5)
+      # Held back until Stryker supports TypeScript 7, see stryker-js#6111
       - dependency-name: typescript
         versions: ['>=6.1.0']
-      - dependency-name: vitest
-        update-types: ['version-update:semver-major']
-      - dependency-name: '@vitest/*'
-        update-types: ['version-update:semver-major']
 
   - package-ecosystem: github-actions
     directory: /

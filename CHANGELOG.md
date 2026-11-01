@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Periodz now requires Node.js 16.9 or later instead of 22, so older projects can install it. CI runs a smoke test of the built package on Node.js 16.9, 18 and 20.
 - The error that `PeriodSeq()` throws for overlapping periods explains that it catches periods overlapping by mistake, and suggests `union()` or `mix()` for periods that may overlap.
+- The tests run on Vitest 5 and the mutation tests on Stryker 10.1, which supports Vitest 5.
 
 ## [0.9.1]
 

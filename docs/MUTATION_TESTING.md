@@ -16,11 +16,11 @@ npx stryker run        # Full run, as in CI
   `STRYKER_DASHBOARD_API_KEY` secret is set.
 - Stryker runs Vitest with `vitest.stryker.config.ts`, which leaves out `Performance.test.ts`, since timing tests
   are unreliable when many Stryker workers run at once.
-- Vitest stays on 4.x for now: with Vitest 5, Stryker's per-test filter matches no tests, so almost every mutant
-  survives ([stryker-js#6210](https://github.com/stryker-mutator/stryker-js/issues/6210)). TypeScript stays on 6.0.x,
-  since Stryker can't read the tsconfig with TypeScript 7
-  ([stryker-js#6111](https://github.com/stryker-mutator/stryker-js/issues/6111)). After upgrading either one, run a
-  full `npx stryker run`, not just `npm test`.
+- TypeScript stays on 6.0.x for now, since Stryker can't read the tsconfig with TypeScript 7
+  ([stryker-js#6111](https://github.com/stryker-mutator/stryker-js/issues/6111)).
+- After upgrading TypeScript, Vitest or Stryker, run a full `npx stryker run`, not just `npm test`. A runner that
+  selects the wrong tests makes mutants survive while `npm test` still passes, as Stryker before 10.1 did with
+  Vitest 5 ([stryker-js#6210](https://github.com/stryker-mutator/stryker-js/issues/6210)).
 
 ## Overview
 

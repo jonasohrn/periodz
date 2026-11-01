@@ -1,6 +1,6 @@
 {
   "name": "periodz",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Set operations (intersection, union, subtract) on periods of numbers, Dates, Day.js and custom comparable values",
   "keywords": [
     "interval",

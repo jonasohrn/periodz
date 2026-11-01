@@ -124,6 +124,30 @@ bookings.span().subtract(bookings); // Period(10, 12), the touching 12–13 and 
 The gaps share their start and end with the periods next to them, since periods are closed. To get the free time within
 a window instead, subtract the periods from the window: `Period(8, 17).subtract(bookings)`.
 
+### Combining many periods
+
+`PeriodSeq()` doesn't accept overlapping periods, so that periods overlapping by mistake are caught. To combine
+periods that may overlap, use the functions `union()`, `intersection()` and `mix()`. They take an array of
+`PeriodLike` and return a `PeriodLike`, like the methods with the same names:
+
+```typescript
+import { Period, PeriodSeq, union, intersection, mix } from 'periodz';
+
+union([Period(14, 16), Period(9, 11), Period(10, 12), Period(12, 13)]); // (9, 13), (14, 16)
+
+// The time when everyone is free
+const alice = PeriodSeq([Period(8, 10), Period(12, 17)]);
+const bob = PeriodSeq([Period(9, 13), Period(15, 18)]);
+intersection([alice, bob, Period(8, 16)]); // (9, 10), (12, 13), (15, 16)
+
+mix([Period(9, 12, 'Alice'), Period(11, 15, 'Bob'), Period(10, 13, 'Carol')]).periods().map(p => p.subjects);
+// [['Alice'], ['Alice', 'Carol'], ['Alice', 'Bob', 'Carol'], ['Bob', 'Carol'], ['Bob']]
+```
+
+A result period gets the subjects and props of the periods it comes from, in the order the periods are given, and an
+empty array gives the empty period. For many periods, the functions are also faster than calling the methods one
+period at a time: for 4000 periods, `union()` and `mix()` are about 100 times faster.
+
 ### Equality and Comparison Operations
 
 ```typescript

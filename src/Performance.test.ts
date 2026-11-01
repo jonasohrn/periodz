@@ -1,7 +1,9 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import {
+  mix,
   Period,
   PeriodSeq,
+  union,
 } from './index.js';
 
 /**
@@ -131,6 +133,36 @@ describe('Performance Optimizations', () => {
       expect(seq.periods().length).toBe(4000);
       const performanceRatio = getPerformanceRatio(endTime - startTime, baseline);
       expect(performanceRatio).toBeLessThan(200);
+    });
+  });
+
+  describe('n-ary operations', () => {
+    // 4000 periods in overlapping pairs, shuffled so that they are not given in order by start
+    const overlappingPairs = Array.from({length: 4000}, (_, i) => Period(i * 10 + (i % 2) * 5, i * 10 + (i % 2) * 5 + 10))
+        .map((period, i) => ({ period, key: (i * 7919) % 4000 }))
+        .sort((a, b) => a.key - b.key)
+        .map(({ period }) => period);
+
+    it('should union many periods in n log n time', () => {
+      // union() of one period at a time gave a ratio of ~2400 here, sorting all periods once ~20
+      const startTime = performance.now();
+      const result = union(overlappingPairs);
+      const endTime = performance.now();
+
+      expect(result.isEmpty()).toBe(false);
+      const performanceRatio = getPerformanceRatio(endTime - startTime, baseline);
+      expect(performanceRatio).toBeLessThan(200);
+    });
+
+    it('should mix many periods in n log² n time', () => {
+      // mix() of one period at a time gave a ratio of ~9600 here, mixing the halves first ~110
+      const startTime = performance.now();
+      const result = mix(overlappingPairs);
+      const endTime = performance.now();
+
+      expect(result.periods().length).toBe(5999);
+      const performanceRatio = getPerformanceRatio(endTime - startTime, baseline);
+      expect(performanceRatio).toBeLessThan(1000);
     });
   });
 

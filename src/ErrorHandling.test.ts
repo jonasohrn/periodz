@@ -208,12 +208,13 @@ describe('Error Handling', () => {
     it('should throw error when trying to input overlapping periods', () => {
       const createFn = () => PeriodSeq([Period(10, 20), Period(19, 25)]);
       expect(createFn).toThrow(PeriodzError);
-      expect(createFn).toThrow('PeriodSeq is not designed to work with overlapping periods: (19, 25) overlaps (10, 20)');
+      expect(createFn).toThrow("PeriodSeq doesn't accept overlapping periods, so that periods overlapping by mistake are caught: " +
+          '(19, 25) overlaps (10, 20). To combine overlapping periods, use union() to merge them or mix() to split them where they overlap.');
     });
 
     it('should find overlapping periods in any order', () => {
       expect(() => PeriodSeq([Period(4, 5), Period(1, 10), Period(2, 3)]))
-          .toThrow('PeriodSeq is not designed to work with overlapping periods: (2, 3) overlaps (1, 10)');
+          .toThrow('(2, 3) overlaps (1, 10)');
 
       // Touching periods do not overlap
       expect(PeriodSeq([Period(20, 30), Period(10, 20)]).periods().length).toBe(2);

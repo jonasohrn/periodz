@@ -15,7 +15,7 @@ export type {
 // Export factories and singleton
 export { Comparable } from './Comparable';
 export { Period, theEmptyPeriod } from './Period';
-export { PeriodSeq } from './PeriodSeq';
+export { PeriodSeq, union, intersection, mix } from './PeriodSeq';
 
 // Export type guards
 export {

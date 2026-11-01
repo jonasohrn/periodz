@@ -9,7 +9,7 @@ import type {
 } from './types';
 
 import { Comparable } from './Comparable';
-import { createPeriodSeq, PeriodSeq } from './PeriodSeq';
+import { createPeriodSeq, PeriodSeq, union } from './PeriodSeq';
 import { isPeriod, assert } from './guards';
 
 // The propsMerger of each period. Kept here so that a period without a propsMerger can use the one of
@@ -169,10 +169,6 @@ const createPeriod = (
     },
 
     union(other: PeriodLike): PeriodLike {
-      if (other.isEmpty()) {
-        return self;
-      }
-
       if (isPeriod(other)) {
         const isMerge = self.overlaps(other) || self.touches(other);
         if (!isMerge) {
@@ -181,7 +177,9 @@ const createPeriod = (
         return spanningPeriod(self, other);
       }
 
-      return createPeriodSeq([self]).union(other);
+      // The n-ary union() of PeriodSeq.ts, which puts the subjects and props of self first,
+      // and returns self itself when other is empty
+      return union([self, other]);
     },
 
     subtract(other: PeriodLike): PeriodLike {

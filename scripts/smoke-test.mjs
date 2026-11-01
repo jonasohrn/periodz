@@ -1,7 +1,7 @@
 // Smoke test of the built package on the oldest supported Node versions, where Vitest can't run.
 // Run `npm run build` first. The import resolves to dist/ through the package's own exports.
 import assert from 'node:assert/strict';
-import { Period, PeriodSeq, PeriodzError, isEmpty, isPeriod, isPeriodSeq, theEmptyPeriod } from 'periodz';
+import { Period, PeriodSeq, PeriodzError, intersection, isEmpty, isPeriod, isPeriodSeq, mix, theEmptyPeriod, union } from 'periodz';
 
 const Version = (v) => ({ v, compareTo: (other) => v - other.v, diff: (other) => v - other.v });
 
@@ -23,6 +23,9 @@ const check = (mk) => {
   assert.ok(seq.existsAt(mk(7)) && !seq.existsAt(mk(15)));
   assert.deepEqual(seq.periodsAt(mk(7)).map((p) => p.subjects), [['alice']]);
   assert.ok(isPeriod(a) && isPeriodSeq(seq) && seq.periods().length === 2);
+  assert.ok(union([P(20, 30), b, a]).eq(PeriodSeq([P(1, 15), P(20, 30)])));
+  assert.ok(intersection([a, b, P(6, 20)]).eq(P(6, 10)));
+  assert.deepEqual(mix([b, a]).periods().map((p) => p.subjects), [['alice'], ['bob', 'alice'], ['bob']]);
 };
 
 check((n) => n);

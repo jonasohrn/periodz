@@ -17,7 +17,8 @@ const endsBy = (period: IPeriod | undefined, position: IComp): boolean => {
  * Creates a sequence of the periods of the given PeriodLikes, sorted by start. Empty periods are dropped.
  * Like every result, it is of the simplest kind that holds the periods: theEmptyPeriod for none,
  * the Period itself for one and a PeriodSeq for two or more.
- * @throws PeriodzError if any two periods overlap. Touching periods are allowed.
+ * @throws PeriodzError if any two periods overlap. Touching periods are allowed. Use union() or mix() to
+ * combine periods that may overlap.
  */
 export const PeriodSeq = (periodsArg: readonly PeriodLike[]): PeriodLike => {
   // Filter out empty periods and collect all periods
@@ -37,7 +38,7 @@ export const PeriodSeq = (periodsArg: readonly PeriodLike[]): PeriodLike => {
   periods.forEach((period, index) => {
     const next = periods[index + 1];
     if (next) {
-      assert(!next.overlaps(period), () => `PeriodSeq is not designed to work with overlapping periods: ${next.toCompactString()} overlaps ${period.toCompactString()}`);
+      assert(!next.overlaps(period), () => `PeriodSeq doesn't accept overlapping periods, so that periods overlapping by mistake are caught: ${next.toCompactString()} overlaps ${period.toCompactString()}. To combine overlapping periods, use union() to merge them or mix() to split them where they overlap.`);
     }
   });
 
@@ -123,25 +124,8 @@ export const createPeriodSeq = (periodsArg: readonly IPeriod[]): IPeriodSeq => {
       if (other.isEmpty()) {
         return self;
       }
-
-      // Group the periods of self and other into runs of overlapping or touching periods, in order by start
-      const runs: { periods: IPeriod[], end: IComp }[] = [];
-      for (const period of [...periods, ...other.periods()].sort(sortFnSeq)) {
-        const run = runs.at(-1);
-        if (run?.end.gte(period._getStart())) {
-          run.periods.push(period);
-          run.end = run.end.max(period._getEnd());
-        } else {
-          runs.push({ periods: [period], end: period._getEnd() });
-        }
-      }
-
-      // Merge each run into one period, with the subjects and props of self first as for union() of two Periods
-      const ownPeriods = new Set(periods);
-      return PeriodSeq(runs.map(run => [
-        ...run.periods.filter(period => ownPeriods.has(period)),
-        ...run.periods.filter(period => !ownPeriods.has(period)),
-      ].reduce(spanningPeriod)));
+      // The n-ary union() below, which puts the subjects and props of self first
+      return union([self, other]);
     },
 
     subtract(other: PeriodLike): PeriodLike {
@@ -243,4 +227,58 @@ export const createPeriodSeq = (periodsArg: readonly IPeriod[]): IPeriodSeq => {
   };
 
   return Object.freeze(self);
+};
+
+/**
+ * The union of the given PeriodLikes, which may overlap. Overlapping and touching periods are merged into one
+ * period, with the subjects and props of the periods it merges, in the order they are given.
+ * Returns theEmptyPeriod for no periods.
+ */
+export const union = (periodLikes: readonly PeriodLike[]): PeriodLike => {
+  // Each period with its position in periodLikes, so that the periods of a run can be merged in that order
+  const entries = periodLikes.flatMap(periodLike => periodLike.periods()).map((period, index) => ({ period, index }));
+
+  // Group the periods into runs of overlapping or touching periods, in order by start. Sorting all periods
+  // once is faster than union() of one period at a time, which sorts the periods merged so far every time.
+  const runs: { entries: (typeof entries)[number][], end: IComp }[] = [];
+  for (const entry of entries.sort((a, b) => sortFnSeq(a.period, b.period))) {
+    const run = runs.at(-1);
+    if (run?.end.gte(entry.period._getStart())) {
+      run.entries.push(entry);
+      run.end = run.end.max(entry.period._getEnd());
+    } else {
+      runs.push({ entries: [entry], end: entry.period._getEnd() });
+    }
+  }
+
+  // Merge each run into one period, as union() of two Periods does, in the order of periodLikes
+  return PeriodSeq(runs.map(run => run.entries
+      .sort((a, b) => a.index - b.index)
+      .map(entry => entry.period)
+      .reduce(spanningPeriod)));
+};
+
+/**
+ * The intersection of all the given PeriodLikes, e.g. the time when everyone is free. A result period has the
+ * subjects and props of the periods it is part of, in the order they are given.
+ * Returns theEmptyPeriod for no periods.
+ */
+export const intersection = (periodLikes: readonly PeriodLike[]): PeriodLike => {
+  const [first = theEmptyPeriod, ...rest] = periodLikes;
+  return rest.reduce((result, periodLike) => result.intersection(periodLike), first);
+};
+
+/**
+ * Mixes the given PeriodLikes, which may overlap, into periods that don't, split wherever a period starts or ends.
+ * A result period has the subjects and props of all the periods it is part of, in the order they are given.
+ * Returns theEmptyPeriod for no periods.
+ */
+export const mix = (periodLikes: readonly PeriodLike[]): PeriodLike => {
+  if (periodLikes.length <= 1) {
+    return periodLikes[0] ?? theEmptyPeriod;
+  }
+  // The halves are mixed first, so that each period is part of about log n mix() calls instead of up to n.
+  // The first half comes first, so the subjects and props stay in the order given.
+  const middle = Math.ceil(periodLikes.length / 2);
+  return mix(periodLikes.slice(0, middle)).mix(mix(periodLikes.slice(middle)));
 };

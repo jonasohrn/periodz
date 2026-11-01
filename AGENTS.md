@@ -16,6 +16,7 @@ work uniformly across the supported value types.
 - PeriodSeq: Represents sequences of non-overlapping periods
 - Subjects: Metadata that can be attached to periods (like employee names)
 - Operations: intersection, union, subtract, contains, overlaps, touches, etc.
+- N-ary functions: `union()`, `intersection()` and `mix()` combine an array of periods that may overlap
 
 
 ## Development Commands
@@ -41,7 +42,7 @@ work uniformly across the supported value types.
 ### Core Components
 
 - **`src/Period.ts`**: Main module for Period containing all period arithmetic functionality
-- **`src/PeriodSeq.ts`**: Main module for PeriodSeq containing all period sequences arithmetic functionality
+- **`src/PeriodSeq.ts`**: Main module for PeriodSeq containing all period sequences arithmetic functionality, including the n-ary `union()`, `intersection()` and `mix()` functions
 
 ### Key Abstractions
 
@@ -82,3 +83,4 @@ work uniformly across the supported value types.
 - Uses custom `testPeriod` helper for creating IPeriod objects in test that is required to be an IPeriod
 - Shared test helpers live in `src/testHelpers.ts`. Never import helpers from a `*.test.ts` file, because that re-runs its describe-blocks in the importing file
 - `Period.test.ts` and `PeriodSeq.test.ts` have one `describe('<op>()')` block per operation, in the same order: factory, `propsMerger` (Period only; cross-operation propsMerger behaviour), accessors (`isEmpty`, `periods`, `length`), predicates (`eq`, `overlaps`, `touches`, `contains`, `existsAt`, `periodsAt`), set operations (`intersection`, `union`, `subtract`, `mix`, `span`), `toString`. Within a block, cases go in this order: `with Period`, `with PeriodSeq`, `with empty period`, special cases, subjects, propsMerger
+- The n-ary `union()`, `intersection()` and `mix()` functions are tested in `Operations.test.ts`, one `describe` block each, with the same case order
